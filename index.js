@@ -9,12 +9,20 @@ var cors = require('cors')
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
-
+const sandbox = process.env.SANDBOX;
+const players = (process.env.ALLOWED_PLAYERS || '').split(',') 
+var whitelist = ['http://example1.com', 'http://example2.com']
 const corsOptions = {
-  origin: 'https://u31t8.csb.app/',
+  origin: sandbox,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
-
+io.origins((origin, callback) => {
+  console.log('origin', {origin, sandbox, valid: origin === sandbox})
+  if (origin !== sandbox) {
+    return callback('origin not allowed', false);
+  }
+  callback(null, true);
+});
 app.use(express.static('public'));
 app.use(cors(corsOptions));
 
@@ -27,7 +35,7 @@ io.on('connection', function (socket) {
 
   setTimeout(() => {
         socket.broadcast.emit('GAMESTATE_UPDATED', {
-        users: process.env.ALLOWED_PLAYERS
+        users: players
     });
 
   }, 1000)
