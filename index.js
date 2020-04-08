@@ -4,13 +4,19 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
+var cors = require('cors')
 
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
-// Routing
+const corsOptions = {
+  origin: 'https://u31t8.csb.app/',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
 app.use(express.static('public'));
+app.use(cors(corsOptions));
 
 // Chatroom
 
