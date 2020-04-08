@@ -12,6 +12,7 @@ server.listen(port, function () {
 const sandbox = process.env.SANDBOX;
 const players = (process.env.ALLOWED_PLAYERS || '').split(',') 
 var whitelist = ['http://example1.com', 'http://example2.com']
+const state = {}
 const corsOptions = {
   origin: sandbox,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
@@ -44,11 +45,13 @@ io.on('connection', function (socket) {
     // we tell the client to execute 'new message'
     const name = data.name
     if (players.indexOf(name) > -1) {
-                  console.log('PLAYER_LOGIN SUCCESS: ', {data})
+              console.log('PLAYER_LOGIN_SUCCESS: ', {data})
 
-        } else {
-          console.log('PLAYER_LOGIN FAIL: ', {data})
-        }
+      socket.emit('PLAYER_LOGIN_SUCCESS', state)
+    } else {
+        console.log('PLAYER_LOGIN FAIL: ', {data})
+        socket.broadcast.emit('PLAYER_LOGIN_FAIL')
+    }
     // socket.broadcast.emit('new message', {
     //   username: socket.username,
     //   message: data
