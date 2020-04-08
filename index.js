@@ -33,19 +33,26 @@ var numUsers = 0;
 io.on('connection', function (socket) {
   var addedUser = false;
 
-  setTimeout(() => {
-        socket.broadcast.emit('GAMESTATE_UPDATED', {
-        users: players
-    });
+//   setTimeout(() => {
+//         socket.broadcast.emit('GAMESTATE_UPDATED', {
+//         users: players
+//     });
 
-  }, 1000)
-  // when the client emits 'new message', this listens and executes
-  socket.on('new message', function (data) {
+//   }, 1000)
+
+  socket.on('PLAYER_LOGIN', function (data) {
     // we tell the client to execute 'new message'
-    socket.broadcast.emit('new message', {
-      username: socket.username,
-      message: data
-    });
+    const name = data.name
+    if (players.indexOf(name) > -1) {
+                  console.log('PLAYER_LOGIN SUCCESS: ', {data})
+
+        } else {
+          console.log('PLAYER_LOGIN FAIL: ', {data})
+        }
+    // socket.broadcast.emit('new message', {
+    //   username: socket.username,
+    //   message: data
+    // });
   });
 
   // when the client emits 'add user', this listens and executes
