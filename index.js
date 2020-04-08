@@ -19,6 +19,12 @@ var numUsers = 0;
 io.on('connection', function (socket) {
   var addedUser = false;
 
+  setTimeout(() => {
+        socket.broadcast.emit('GAMESTATE_UPDATED', {
+        users: process.env.ALLOWED_PLAYERS
+    });
+
+  }, 1000)
   // when the client emits 'new message', this listens and executes
   socket.on('new message', function (data) {
     // we tell the client to execute 'new message'
