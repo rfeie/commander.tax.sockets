@@ -5,14 +5,14 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 var cors = require('cors')
-
+var merge = require('lodash').merge
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 const sandbox = process.env.SANDBOX;
 const players = (process.env.ALLOWED_PLAYERS || '').split(',') 
 var whitelist = ['http://example1.com', 'http://example2.com']
-const state = {}
+let state = {}
 const corsOptions = {
   origin: sandbox,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
@@ -50,8 +50,28 @@ io.on('connection', function (socket) {
       socket.emit('PLAYER_LOGIN_SUCCESS', state)
     } else {
         console.log('PLAYER_LOGIN FAIL: ', {data})
-        socket.broadcast.emit('PLAYER_LOGIN_FAIL')
+        socket.emit('PLAYER_LOGIN_FAIL')
     }
+    // socket.broadcast.emit('new message', {
+    //   username: socket.username,
+    //   message: data
+    // });
+  });
+  
+    socket.on('UPDATE_GAMESTATE', function (data) {
+    // we tell the client to execute 'new message'
+//     const name = data.name
+      state = merge(state, data)
+            socket.emit('GAMESTATE_UPDATED', state)
+
+//     if (players.indexOf(name) > -1) {
+//               console.log('PLAYER_LOGIN_SUCCESS: ', {data})
+
+//       socket.emit('PLAYER_LOGIN_SUCCESS', state)
+//     } else {
+//         console.log('PLAYER_LOGIN FAIL: ', {data})
+//         socket.broadcast.emit('PLAYER_LOGIN_FAIL')
+//     }
     // socket.broadcast.emit('new message', {
     //   username: socket.username,
     //   message: data
