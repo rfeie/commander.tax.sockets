@@ -63,7 +63,7 @@ io.on('connection', function (socket) {
 //     const name = data.name
       state = merge(state, data)
             socket.emit('GAMESTATE_UPDATED', state)
-
+  socket.broadcast.emit('GAMESTATE_UPDATED', state)
 //     if (players.indexOf(name) > -1) {
 //               console.log('PLAYER_LOGIN_SUCCESS: ', {data})
 
