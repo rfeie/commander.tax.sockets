@@ -60,7 +60,7 @@ io.on("connection", function (socket) {
   });
 
   socket.on("UPDATE_GAMESTATE", function (data) {
-    state = merge(state, data);
+    state = data
     socket.emit("GAMESTATE_UPDATED", state);
     socket.broadcast.emit("GAMESTATE_UPDATED", state);
   });
