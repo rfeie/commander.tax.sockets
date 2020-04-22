@@ -1,8 +1,38 @@
 # Socket.IO Chat
 A simple [chat demo](https://github.com/socketio/socket.io/tree/master/examples/chat) using the  [socket.io](http://socket.io/) real-time bidirectional event library for Node.js.
 
-Multiple users can join a chat room by each entering a unique username
-when the website loads. Users can type chat messages to the room, and a notification is sent to all users when another user joins or leaves.
+
+## Actions:
+
+### connection
+- framework action
 
 
-![](https://cdn.glitch.com/d5323c5b-d1fd-4d39-97ac-c5d8b4cfd3f8%2FsocketIOChatGIF.gif)
+### PLAYER_LOGIN
+- Inbound
+
+### PLAYER_LOGIN_SUCCESS
+- Outbound
+- Reply
+
+### PLAYER_LOGIN_FAIL
+- Outbound
+- Reply
+
+### PLAYER_LIST_UPDATE
+- Outbound
+- Broadcast
+
+
+### UPDATE_GAMESTATE
+- Inbound
+
+### UPDATED_GAMESTATE
+- Outbound
+- Reply
+- Broadcast
+
+### PLAYER_UPDATE
+
+### disconnect
+- framework action
