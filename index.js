@@ -3,9 +3,10 @@ var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
 var io = require("socket.io")(server);
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 4321;
 var cors = require("cors");
 var merge = require("lodash").merge;
+require("dotenv").config();
 server.listen(port, function () {
   console.log("Server listening at port %d", port);
 });
@@ -35,6 +36,8 @@ const formatPlayers = (players) => Object.keys(players);
 io.on("connection", function (socket) {
   let username = null;
 
+  console.log("connection: ", { state });
+
   socket.on("PLAYER_LOGIN", function (data) {
     // we tell the client to execute 'new message'
     const name = data.name;
@@ -60,13 +63,21 @@ io.on("connection", function (socket) {
   });
 
   socket.on("UPDATE_GAMESTATE", function (data) {
-    state = data
+    state = data;
     socket.emit("GAMESTATE_UPDATED", state);
     socket.broadcast.emit("GAMESTATE_UPDATED", state);
+  });
+  socket.on("PLAYER_UPDATE", function (data) {
+    const { id } = data;
+    state[id] = data;
+    console.log("PLAYER_UPDATE: ", data, state[id]);
+    socket.emit("PLAYER_UPDATED", state[id]);
+    socket.broadcast.emit("PLAYER_UPDATED", state[id]);
   });
 
   // when the user disconnects.. perform this
   socket.on("disconnect", function () {
+    console.log("disconnect: ", activePlayers);
     if (activePlayers[username]) {
       delete activePlayers[username];
       socket.broadcast.emit("PLAYER_LIST_UPDATE", formatPlayers(activePlayers));
